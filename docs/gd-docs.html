@@ -1,0 +1,534 @@
+<title>Meat Basher</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #eef0ef;
+    --bg-panel: #ffffff;
+    --ink: #1b2027;
+    --ink-dim: #565f66;
+    --line: rgba(27,32,39,0.13);
+    --accent: #d94e28;
+    --accent-ink: #ffffff;
+    --accent-soft: #fbe3d8;
+    --safe: #1f8f7f;
+    --safe-soft: #dcf0ec;
+    --chip-bg: #e2e6e5;
+    --shadow: rgba(27,32,39,0.08);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14181b;
+      --bg-panel: #1b2125;
+      --ink: #edf1ef;
+      --ink-dim: #9aa6a5;
+      --line: rgba(237,241,239,0.13);
+      --accent: #ff7548;
+      --accent-ink: #171008;
+      --accent-soft: rgba(255,117,72,0.16);
+      --safe: #3fd6bf;
+      --safe-soft: rgba(63,214,191,0.14);
+      --chip-bg: #232a2d;
+      --shadow: rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #14181b;
+    --bg-panel: #1b2125;
+    --ink: #edf1ef;
+    --ink-dim: #9aa6a5;
+    --line: rgba(237,241,239,0.13);
+    --accent: #ff7548;
+    --accent-ink: #171008;
+    --accent-soft: rgba(255,117,72,0.16);
+    --safe: #3fd6bf;
+    --safe-soft: rgba(63,214,191,0.14);
+    --chip-bg: #232a2d;
+    --shadow: rgba(0,0,0,0.35);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+    line-height: 1.55;
+  }
+  .page {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 2.75rem 1.5rem 4rem;
+  }
+  h1, h2 {
+    font-family: "Big Shoulders", "Arial Narrow", sans-serif;
+    text-transform: uppercase;
+    text-wrap: balance;
+    letter-spacing: 0.02em;
+    margin: 0;
+  }
+  code, .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; }
+
+  header.hero {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    padding-bottom: 1.75rem;
+    border-bottom: 3px solid var(--ink);
+    margin-bottom: 2.25rem;
+  }
+  .eyebrow {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  h1 { font-size: clamp(2.3rem, 6vw, 3.1rem); font-weight: 800; line-height: 0.98; }
+  .pitch { color: var(--ink-dim); font-size: 1.02rem; max-width: 56ch; }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.4rem;
+  }
+  .chip {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.76rem;
+    background: var(--chip-bg);
+    color: var(--ink);
+    padding: 0.32rem 0.7rem;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+
+  section { margin-bottom: 2.4rem; }
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.7rem;
+    margin-bottom: 0.9rem;
+  }
+  .section-num {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.85rem;
+    color: var(--ink-dim);
+  }
+  h2 { font-size: 1.35rem; font-weight: 700; }
+
+  .panel {
+    background: var(--bg-panel);
+    border: 1px solid var(--line);
+    box-shadow: 0 1px 2px var(--shadow);
+    clip-path: polygon(0 10px, 10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
+    padding: 1.3rem 1.4rem;
+  }
+
+  .rule-box {
+    background: var(--accent-soft);
+    border: 1px solid var(--accent);
+    clip-path: polygon(0 10px, 10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
+    padding: 1.2rem 1.4rem;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+  .rule-box .tag {
+    font-family: "Big Shoulders", sans-serif;
+    font-weight: 800;
+    font-size: 1.6rem;
+    color: var(--accent);
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .rule-box p { margin: 0.3rem 0 0; }
+  .rule-box strong { display: block; font-size: 1.05rem; }
+
+  .loop-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 0.85rem;
+  }
+  .loop-item {
+    padding: 0.95rem 1.05rem;
+    border: 1px solid var(--line);
+    background: var(--bg-panel);
+  }
+  .loop-item .k {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.35rem;
+  }
+
+  .scope-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  @media (max-width: 560px) { .scope-grid { grid-template-columns: 1fr; } }
+  .scope-col { padding: 1.1rem 1.2rem; border: 1px solid var(--line); }
+  .scope-col.in { border-left: 4px solid var(--safe); }
+  .scope-col.out { border-left: 4px solid var(--ink-dim); }
+  .scope-label {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    font-weight: 500;
+    margin-bottom: 0.6rem;
+    display: block;
+  }
+  .scope-col.in .scope-label { color: var(--safe); }
+  .scope-col.out .scope-label { color: var(--ink-dim); }
+  .scope-col ul { margin: 0; padding-left: 1.1rem; }
+  .scope-col li { margin-bottom: 0.35rem; }
+  .scope-col p.note { color: var(--ink-dim); font-size: 0.86rem; margin: 0.7rem 0 0; }
+
+  .tree {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.83rem;
+    white-space: pre;
+    overflow-x: auto;
+    padding: 1.1rem 1.3rem;
+    background: var(--bg-panel);
+    border: 1px solid var(--line);
+    line-height: 1.65;
+  }
+  .tree .comment { color: var(--ink-dim); }
+  .tree .node { color: var(--accent); }
+
+  .roles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.85rem;
+  }
+  .role-card {
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--line);
+    background: var(--bg-panel);
+  }
+  .role-card .who {
+    font-family: "Big Shoulders", sans-serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    text-transform: uppercase;
+  }
+  .role-card p { margin: 0.3rem 0 0; color: var(--ink-dim); font-size: 0.92rem; }
+
+  .todo-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.55rem; }
+  .todo-list li {
+    display: flex;
+    gap: 0.65rem;
+    align-items: flex-start;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid var(--line);
+    background: var(--bg-panel);
+    font-size: 0.95rem;
+  }
+  .todo-list .box {
+    flex-shrink: 0;
+    width: 15px; height: 15px;
+    border: 2px solid var(--ink-dim);
+    margin-top: 0.2rem;
+  }
+
+  .phase-list { display: flex; flex-direction: column; gap: 0.7rem; }
+  .phase {
+    display: grid;
+    grid-template-columns: 84px 1fr;
+    gap: 0.3rem 1.1rem;
+    padding: 0.9rem 1.1rem;
+    border: 1px solid var(--line);
+    background: var(--bg-panel);
+  }
+  @media (max-width: 560px) { .phase { grid-template-columns: 1fr; } }
+  .phase-num {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    font-weight: 500;
+    padding-top: 0.15rem;
+  }
+  .phase-body h3 {
+    font-family: "Big Shoulders", sans-serif;
+    font-weight: 700;
+    font-size: 1.08rem;
+    text-transform: uppercase;
+    margin: 0 0 0.35rem;
+    letter-spacing: 0.01em;
+  }
+  .phase-body p { margin: 0.25rem 0 0; font-size: 0.92rem; }
+  .phase-body .needs { color: var(--ink-dim); }
+  .phase-body .needs .k {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--safe);
+    margin-right: 0.4rem;
+  }
+
+  .resource-box {
+    margin-top: 1rem;
+    padding: 1rem 1.2rem;
+    border-left: 4px solid var(--accent);
+    background: var(--accent-soft);
+  }
+  .resource-box .scope-label { color: var(--accent); }
+  .resource-box ul { margin: 0; padding-left: 1.1rem; }
+  .resource-box li { margin-bottom: 0.3rem; font-size: 0.92rem; }
+
+  .log { display: flex; flex-direction: column; gap: 0; }
+  .log-entry {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 1rem;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .log-entry:last-child { border-bottom: none; }
+  .log-date {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.78rem;
+    color: var(--ink-dim);
+    padding-top: 0.15rem;
+  }
+  .log-entry p { margin: 0; }
+
+  footer {
+    margin-top: 2.5rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--line);
+    font-size: 0.82rem;
+    color: var(--ink-dim);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    section { animation: rise 0.4s ease-out backwards; }
+    section:nth-of-type(1) { animation-delay: 0.02s; }
+    section:nth-of-type(2) { animation-delay: 0.06s; }
+    section:nth-of-type(3) { animation-delay: 0.1s; }
+  }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+
+<div class="page">
+
+  <header class="hero">
+    <span class="eyebrow">GAME DESIGN &amp; PLANUNGSDOKUMENT</span>
+    <h1>Meat Basher</h1>
+    <p class="pitch">Ein winziger Brotato-Clone zu zweit: Top-down Melee-Survival, auf das Wesentliche runtergebrochen. Dieses Dokument wächst live während unseres Planungsgesprächs mit.</p>
+    <div class="chips">
+      <span class="chip">Godot 4.7</span>
+      <span class="chip">GDScript</span>
+      <span class="chip">Top-down · Autocombat</span>
+      <span class="chip">Team: 2 Personen</span>
+      <span class="chip">Status: Planung</span>
+    </div>
+  </header>
+
+  <section>
+    <div class="rule-box">
+      <span class="tag">§1</span>
+      <div>
+        <strong>Diesmal wird nicht das nächste GOTY gebaut.</strong>
+        <p>Genau der Umfang, der weiter unten steht — nicht mehr. Bisherige Versuche sind daran gescheitert, dass der Anspruch immer weiter wuchs. Diesmal: klein, spielbar, fertig. Alles Weitere kommt erst, wenn dieser Kern läuft und Spaß macht.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="section-num">01</span><h2>Kernschleife</h2></div>
+    <div class="loop-grid">
+      <div class="loop-item"><span class="k">Map</span>Eine kleine, begehbare Fläche. Keine Segmente/Räume — eine zusammenhängende Arena.</div>
+      <div class="loop-item"><span class="k">Spieler-Bewegung</span>Nur WASD. Kein Maus-Input nötig.</div>
+      <div class="loop-item"><span class="k">Autocombat</span>Angriff läuft automatisch — wie in Brotato per Default. Cleave: <em>alle</em> Gegner innerhalb der Reichweite werden gleichzeitig getroffen.</div>
+      <div class="loop-item"><span class="k">Angriff</span>Melee, mit spürbar größerer Reichweite als der Kontaktradius der Gegner. Feuert per Cooldown-Timer.</div>
+      <div class="loop-item"><span class="k">Gegner-Spawn</span>Spawnt laufend; Rate/Anzahl steigt mit der verstrichenen Zeit.</div>
+      <div class="loop-item"><span class="k">Schaden</span>Gegner fügen Schaden zu, sobald ihre Hitbox den Spieler berührt.</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="section-num">02</span><h2>Scope v0.1</h2></div>
+    <div class="scope-grid">
+      <div class="scope-col in">
+        <span class="scope-label">DRIN</span>
+        <ul>
+          <li>Eine Map, ein Spieler, ein Gegnertyp</li>
+          <li>Bewegung + Autocombat</li>
+          <li>Melee-Angriff mit Reichweitenvorteil</li>
+          <li>Gegner-Spawner mit steigender Rate</li>
+          <li>Kontaktschaden Gegner → Spieler</li>
+        </ul>
+      </div>
+      <div class="scope-col out">
+        <span class="scope-label">BEWUSST VERTAGT</span>
+        <ul>
+          <li>Score / Währung / Shop</li>
+          <li>Waffen- oder Upgrade-System</li>
+          <li>Waves, Runden, Menüs</li>
+          <li>Mehrere Gegnertypen</li>
+          <li>Sound, Polish, Animationen</li>
+        </ul>
+        <p class="note">Kein Verbot — nur nicht Ziel von v0.1. Kommt rein, sobald der Kern steht und Lust da ist.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="section-num">03</span><h2>Architektur-Skizze</h2></div>
+    <div class="panel">
+      <p style="margin-top:0; color:var(--ink-dim); font-size:0.9rem;">Vorschlag zur Diskussion — Node-Struktur, kein finaler Bauplan.</p>
+      <div class="tree"><span class="comment">Main</span> <span class="node">(Node2D)</span>
+├─ Arena          <span class="comment">// Boden + Kollisions-Ränder</span>
+├─ Player         <span class="node">(CharacterBody2D)</span>
+│   ├─ Sprite2D
+│   ├─ Hurtbox      <span class="node">(Area2D)</span>  <span class="comment">// wird von Gegnern getroffen</span>
+│   ├─ AttackRange  <span class="node">(Area2D)</span>  <span class="comment">// erkennt Gegner in Reichweite</span>
+│   ├─ AttackTimer  <span class="node">(Timer)</span>   <span class="comment">// Cooldown, trifft bei jedem Tick ALLE Gegner in AttackRange (Cleave)</span>
+│   └─ Camera2D
+├─ EnemySpawner   <span class="node">(Node2D + Timer)</span> <span class="comment">// wait_time sinkt über Zeit</span>
+└─ Enemies        <span class="node">(Node2D)</span>  <span class="comment">// Container für Enemy-Instanzen</span>
+     └─ Enemy     <span class="node">(CharacterBody2D)</span>
+          ├─ Sprite2D
+          └─ Hitbox <span class="node">(Area2D)</span> <span class="comment">// Schaden bei Overlap mit Player-Hurtbox</span></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="section-num">04</span><h2>Lernpfad &amp; Umsetzungsreihenfolge</h2></div>
+    <p style="margin-top:0; color:var(--ink-dim); font-size:0.9rem;">Jede Phase baut auf der vorherigen auf. Lern nur das, was die jeweils nächste Phase braucht — nicht mehr, nicht vorher.</p>
+    <div class="phase-list">
+      <div class="phase">
+        <span class="phase-num">PHASE 0</span>
+        <div class="phase-body">
+          <h3>Editor kennenlernen</h3>
+          <p>Godot 4.7 installieren, Szenen/Node-Konzept, Szenenbaum, Inspector, Projekt anlegen — noch kein Code.</p>
+          <p class="needs"><span class="k">Empfehlung</span>Einmal komplett das offizielle Einsteiger-Tutorial "Your First 2D Game" (Dodge the Creeps) aus der Godot-Doku durchspielen. Deckt fast dieselbe Grundmechanik ab (Spieler, Timer-Spawner, Kollisionen) — bevor ihr euer eigenes baut.</p>
+        </div>
+      </div>
+      <div class="phase">
+        <span class="phase-num">PHASE 1</span>
+        <div class="phase-body">
+          <h3>Grundgerüst</h3>
+          <p>Projekt + Ordnerstruktur anlegen, Arena-Szene (Boden + Rand-Kollision), Input Map für WASD in den Projekteinstellungen.</p>
+          <p class="needs"><span class="k">Braucht</span>Szenen erstellen/verschachteln, Input Map — kein Scripting nötig.</p>
+        </div>
+      </div>
+      <div class="phase">
+        <span class="phase-num">PHASE 2</span>
+        <div class="phase-body">
+          <h3>Spieler-Bewegung</h3>
+          <p>Spieler läuft mit WASD durch die Arena, Kamera folgt.</p>
+          <p class="needs"><span class="k">Braucht</span><code class="mono">CharacterBody2D</code>, <code class="mono">_physics_process()</code>, <code class="mono">Input.get_vector()</code>, <code class="mono">move_and_slide()</code>.</p>
+        </div>
+      </div>
+      <div class="phase">
+        <span class="phase-num">PHASE 3</span>
+        <div class="phase-body">
+          <h3>Gegner-Bewegung</h3>
+          <p>Enemy-Szene, die sich auf den Spieler zubewegt.</p>
+          <p class="needs"><span class="k">Braucht</span>Richtungsvektor berechnen (<code class="mono">position.direction_to()</code>), Referenz auf den Spieler-Node (z. B. über Gruppen).</p>
+        </div>
+      </div>
+      <div class="phase">
+        <span class="phase-num">PHASE 4</span>
+        <div class="phase-body">
+          <h3>Spawner</h3>
+          <p>EnemySpawner erzeugt laufend neue Enemy-Instanzen an zufälligen Randpositionen.</p>
+          <p class="needs"><span class="k">Braucht</span><code class="mono">Timer</code> + <code class="mono">timeout</code>-Signal, <code class="mono">PackedScene.instantiate()</code>, <code class="mono">add_child()</code>, Zufallswerte.</p>
+        </div>
+      </div>
+      <div class="phase">
+        <span class="phase-num">PHASE 5</span>
+        <div class="phase-body">
+          <h3>Kontaktschaden</h3>
+          <p>Hurtbox am Spieler, Hitbox am Gegner — Berührung reduziert Spieler-HP (erstmal nur zum Testen ausgeben).</p>
+          <p class="needs"><span class="k">Braucht</span><code class="mono">Area2D</code>/<code class="mono">CollisionShape2D</code>, Signale (<code class="mono">body_entered</code>), eigene <code class="mono">signal</code>s, <code class="mono">@export</code>-Variablen.</p>
+        </div>
+      </div>
+      <div class="phase">
+        <span class="phase-num">PHASE 6</span>
+        <div class="phase-body">
+          <h3>Autocombat (Cleave)</h3>
+          <p>AttackRange + AttackTimer am Spieler — trifft automatisch alle Gegner in Reichweite.</p>
+          <p class="needs"><span class="k">Braucht</span>Zweiten <code class="mono">Timer</code> als Cooldown, <code class="mono">get_overlapping_bodies()</code>, <code class="mono">for</code>-Schleife, Methodenaufruf auf fremden Nodes.</p>
+        </div>
+      </div>
+      <div class="phase">
+        <span class="phase-num">PHASE 7</span>
+        <div class="phase-body">
+          <h3>Tod &amp; Zustände</h3>
+          <p>Gegner verschwinden bei 0 HP, Spieler stirbt/startet neu bei 0 HP.</p>
+          <p class="needs"><span class="k">Braucht</span>Bedingungen (<code class="mono">if health &lt;= 0</code>), <code class="mono">queue_free()</code>, Szene neu laden.</p>
+        </div>
+      </div>
+      <div class="phase">
+        <span class="phase-num">PHASE 8</span>
+        <div class="phase-body">
+          <h3>Steigende Schwierigkeit</h3>
+          <p>Spawner wird über die Zeit schneller/mehr.</p>
+          <p class="needs"><span class="k">Braucht</span>Verstrichene Zeit tracken, <code class="mono">wait_time</code> des Spawner-Timers zur Laufzeit anpassen.</p>
+        </div>
+      </div>
+      <div class="phase">
+        <span class="phase-num">PHASE 9</span>
+        <div class="phase-body">
+          <h3>Platzhalter → echte Assets</h3>
+          <p>Sprites vom Freund einsetzen, sobald verfügbar. Kein neues Konzept nötig.</p>
+        </div>
+      </div>
+    </div>
+    <div class="resource-box">
+      <span class="scope-label">RESSOURCEN ZUM NACHSCHLAGEN</span>
+      <ul>
+        <li>Offizielle Godot-Doku (docs.godotengine.org) — Schritt-für-Schritt-Anleitungen plus vollständige Scripting-Referenz für jede Node-Klasse.</li>
+        <li>Einsteiger-Tutorial "Your First 2D Game" / "Dodge the Creeps" — in der Doku unter den Getting-Started-Guides zu finden, deckt fast genau diese Grundmechanik ab.</li>
+        <li>GDQuest und HeartBeast (YouTube) — freie Godot-4-Tutorials, gut für genau diese Art Top-down-Mechaniken.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="section-num">05</span><h2>Rollen &amp; Werkzeuge</h2></div>
+    <div class="roles">
+      <div class="role-card"><span class="who">Housten</span><p>Engine &amp; Code — Godot-Projekt, GDScript, gesamte Spiellogik.</p></div>
+      <div class="role-card"><span class="who">ArpyAges</span><p>Assets — Sprites, später ggf. Sound. Bis dahin: Platzhalter-Formen.</p></div>
+      <div class="role-card"><span class="who">GDScript-Kurs</span><p>Bewusst auf später verschoben — eigenes Thema, sobald der Prototyp steht.</p></div>
+      <div class="role-card"><span class="who">Godot-AI-Tools</span><p>In dieser Session verfügbar: direkter Zugriff auf den Godot-Editor (Szenen, Nodes, Skripte). Relevant, sobald wir von Planung zu Umsetzung wechseln.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="section-num">06</span><h2>Offene Fragen &amp; nächste Schritte</h2></div>
+    <ul class="todo-list">
+      <li><span class="box"></span>Projekt-Grundgerüst in Godot 4.7 anlegen (Ordner-/Szenenstruktur)</li>
+      <li><span class="box"></span>Input Map: nur WASD (kein Angriffs-Input nötig — Autocombat)</li>
+      <li><span class="box"></span>Player-Movement-Script (CharacterBody2D, move_and_slide)</li>
+      <li><span class="box"></span>Angriffsrate festlegen (AttackTimer wait_time / Cooldown)</li>
+      <li><span class="box"></span>Enemy-Grundverhalten: Bewegung Richtung Spieler</li>
+      <li><span class="box"></span>Spawner-Formel: wie genau steigt die Rate über Zeit?</li>
+      <li><span class="box"></span>Health/Tod: HP-Wert, was passiert bei 0 HP?</li>
+      <li><span class="box"></span>Platzhalter-Grafik (Formen/Farben) bis Assets vom Freund da sind</li>
+    </ul>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="section-num">07</span><h2>Gesprächsnotizen</h2></div>
+    <div class="panel">
+      <p style="margin:0; color:var(--ink-dim); font-size:0.9rem;">Noch keine Einträge — die Grundplanung oben ist der Stand, ab hier wird mitgeschrieben.</p>
+    </div>
+  </section>
+
+  <footer>Lebendes Dokument — wird während unseres Gesprächs laufend aktualisiert.</footer>
+
+</div>
