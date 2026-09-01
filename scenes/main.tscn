@@ -1,7 +1,11 @@
 [gd_scene format=3 uid="uid://da5ukbdddo2ar"]
 
 [ext_resource type="PackedScene" uid="uid://dx7wm4j8lcwb8" path="res://scenes/arena.tscn" id="1_0wfyh"]
+[ext_resource type="PackedScene" uid="uid://il61sq2i2lbw" path="res://scenes/player.tscn" id="1_o5qli"]
 
 [node name="Main" type="Node2D" unique_id=707418018]
 
 [node name="Arena" parent="." unique_id=1862019561 instance=ExtResource("1_0wfyh")]
+
+[node name="Player" parent="." unique_id=969081996 instance=ExtResource("1_o5qli")]
+speed = 500.0

@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://il61sq2i2lbw"]
+
+[ext_resource type="Texture2D" uid="uid://dtsvyg20fhily" path="res://assets/meater_idle.png" id="1_3vyb7"]
+[ext_resource type="Script" uid="uid://bvpl84ynuc1k4" path="res://scripts/player.gd" id="1_g2els"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_t4fdx"]
+radius = 84.0
+
+[node name="Player" type="CharacterBody2D" unique_id=969081996]
+script = ExtResource("1_g2els")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1281809034]
+scale = Vector2(0.095, 0.095)
+texture = ExtResource("1_3vyb7")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=281830652]
+position = Vector2(3, 2)
+shape = SubResource("CircleShape2D_t4fdx")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=2093243084]
+limit_left = -2500
+limit_top = -2550
+limit_right = 2550
+limit_bottom = 2550
