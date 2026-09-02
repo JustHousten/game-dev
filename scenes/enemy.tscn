@@ -5,6 +5,9 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7dkxj"]
 size = Vector2(40, 40)
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_7dkxj"]
+radius = 28.160255
+
 [node name="Enemy" type="CharacterBody2D" unique_id=1053383858]
 collision_layer = 4
 script = ExtResource("1_7p1mj")
@@ -20,3 +23,10 @@ color = Color(1, 0, 0, 1)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=897698599]
 shape = SubResource("RectangleShape2D_7dkxj")
+
+[node name="Hitbox" type="Area2D" parent="." unique_id=1689128880]
+collision_layer = 16
+collision_mask = 8
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" unique_id=2046594847]
+shape = SubResource("CircleShape2D_7dkxj")
