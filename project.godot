@@ -71,6 +71,8 @@ ui_down={
 2d_physics/layer_3="enemies"
 2d_physics/layer_4="hurtbox"
 2d_physics/layer_5="hitbox"
+2d_physics/layer_6="attack_range"
+2d_physics/layer_7="enemy_hurtbox"
 
 [physics]
 

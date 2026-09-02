@@ -10,7 +10,6 @@
 [node name="Arena" parent="." unique_id=1862019561 instance=ExtResource("1_0wfyh")]
 
 [node name="Player" parent="." unique_id=969081996 instance=ExtResource("1_o5qli")]
-speed = 500.0
 
 [node name="EnemySpawner" type="Node2D" parent="." unique_id=2043201472]
 script = ExtResource("4_jyhfs")
