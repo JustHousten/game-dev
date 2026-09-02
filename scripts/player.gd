@@ -11,6 +11,8 @@ func _ready() -> void:
 func take_damage(amount: float) -> void:
 	current_health -= amount
 	print("player health: ", current_health)
+	if current_health <= 0:
+		get_tree().reload_current_scene()
 	
 func _physics_process(_delta: float) -> void:
 	var direction := Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")

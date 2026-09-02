@@ -13,6 +13,8 @@ func _ready() -> void:
 func take_damage(amount: float) -> void:
 	current_health -= amount
 	print(name, " health: ", current_health)
+	if current_health <= 0:
+		queue_free()
 
 func _physics_process(_delta: float) -> void:
 	if not player:
